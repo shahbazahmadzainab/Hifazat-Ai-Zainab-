@@ -116,10 +116,13 @@ function App() {
               </div>
             </div>
 
-            <div className="safety-note">
-              🛡️ <strong>Safety first:</strong> Never share passwords,
-              OTPs, CNIC numbers, bank details or private images.
-            </div>
+<div className="safety-note">
+  🛡️ <strong>Privacy & Safety:</strong> Never share passwords,
+  OTPs, CNIC numbers, bank details, or private/intimate images.
+  Hifazat AI provides general digital-safety guidance and is not a
+  replacement for official emergency, legal, or law-enforcement services.
+</div>
+
           </div>
         )}
 
