@@ -6,29 +6,36 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const sendMessage = async () => {
-    if (!message.trim() || loading) return;
+  const sendMessage = async (customMessage = null) => {
+    const text = customMessage || message.trim();
 
-    const userMessage = message.trim();
+    if (!text || loading) return;
 
     setMessages((prev) => [
       ...prev,
-      { role: "user", content: userMessage },
+      { role: "user", content: text },
     ]);
 
     setMessage("");
     setLoading(true);
 
     try {
-      const response = await fetch("https://hifazat-ai-zainab.onrender.com/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: userMessage,
-        }),
-      });
+      const response = await fetch(
+        "https://hifazat-ai-zainab.onrender.com/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: text,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Server response failed");
+      }
 
       const data = await response.json();
 
@@ -46,7 +53,8 @@ function App() {
         ...prev,
         {
           role: "assistant",
-          content: "Sorry, Hifazat AI se response nahi aa saka.",
+          content:
+            "Sorry, Hifazat AI se response nahi aa saka. Please thori dair baad dobara try karein.",
         },
       ]);
     } finally {
@@ -61,10 +69,18 @@ function App() {
     }
   };
 
+  const suggestedQuestions = [
+    "Mujhe suspicious link mila hai, kya karun?",
+    "Kisi ne meri fake profile bana di hai.",
+    "Online harassment se kaise protect karun?",
+    "Mera account secure kaise karun?",
+  ];
+
   return (
     <div className="app">
       <header className="header">
         <div className="logo">🛡️</div>
+
         <div>
           <h1>Hifazat AI</h1>
           <p>Digital Safety Assistant</p>
@@ -75,11 +91,35 @@ function App() {
         {messages.length === 0 && (
           <div className="welcome">
             <div className="welcome-icon">🛡️</div>
+
             <h2>Welcome to Hifazat AI</h2>
+
             <p>
-              Online safety, scams, harassment, privacy aur cyber
-              safety ke bare mein poochhein.
+              Your digital safety assistant. Get simple and practical
+              guidance about scams, harassment, privacy, account security
+              and other online safety concerns.
             </p>
+
+            <div className="suggested-section">
+              <h3>How can I help?</h3>
+
+              <div className="suggested-questions">
+                {suggestedQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    className="suggested-question"
+                    onClick={() => sendMessage(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="safety-note">
+              🛡️ <strong>Safety first:</strong> Never share passwords,
+              OTPs, CNIC numbers, bank details or private images.
+            </div>
           </div>
         )}
 
@@ -94,14 +134,20 @@ function App() {
               <div className="message-label">
                 {msg.role === "user" ? "You" : "Hifazat AI"}
               </div>
-              <div className="message-content">{msg.content}</div>
+
+              <div className="message-content">
+                {msg.content}
+              </div>
             </div>
           ))}
 
           {loading && (
             <div className="message ai-message">
               <div className="message-label">Hifazat AI</div>
-              <div className="message-content">Thinking...</div>
+
+              <div className="message-content">
+                Thinking...
+              </div>
             </div>
           )}
         </div>
@@ -114,9 +160,13 @@ function App() {
           onKeyDown={handleKeyDown}
           placeholder="Apna sawal likhein..."
           rows="1"
+          aria-label="Type your question"
         />
 
-        <button onClick={sendMessage} disabled={loading || !message.trim()}>
+        <button
+          onClick={() => sendMessage()}
+          disabled={loading || !message.trim()}
+        >
           {loading ? "..." : "Send"}
         </button>
       </div>
