@@ -1,8 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 from openai import OpenAI
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
 import os
 
 
@@ -19,12 +23,26 @@ if not api_key:
 
 
 # =========================================================
+# RATE LIMITER
+# =========================================================
+
+limiter = Limiter(key_func=get_remote_address)
+
+
+# =========================================================
 # FASTAPI APP
 # =========================================================
 
 app = FastAPI(
     title="Hifazat AI",
     version="1.0.0"
+)
+
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
 )
 
 
@@ -40,7 +58,7 @@ app.add_middleware(
         "https://hifazat-ai-zainab.vercel.app",
     ],
     allow_credentials=True,
-    allow_methods=["POST", "GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
 
@@ -77,7 +95,7 @@ def home():
 
 
 # =========================================================
-# HEALTH CHECK
+# HEALTH
 # =========================================================
 
 @app.get("/health")
@@ -92,9 +110,10 @@ def health():
 # =========================================================
 
 @app.post("/chat")
-def chat(request: ChatRequest):
+@limiter.limit("20/minute")
+def chat(request: Request, chat_request: ChatRequest):
 
-    user_message = request.message.strip()
+    user_message = chat_request.message.strip()
 
     if not user_message:
         raise HTTPException(
@@ -169,7 +188,6 @@ Important rules:
 
     except Exception as e:
 
-        # Keep technical details in server logs only.
         print("OPENAI ERROR:", repr(e))
 
         return {
