@@ -923,3 +923,82 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.popup {
+  width: min(500px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  color: #172033;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #172033;
+}
+
+.popup p {
+  color: #596273;
+  line-height: 1.5;
+}
+
+.popup input,
+.popup textarea,
+.popup select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #d9dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #172033;
+  font-size: 15px;
+}
+
+.popup textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.cancel-button,
+.check-button {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancel-button {
+  background: #eef1f5;
+  color: #172033;
+}
+
+.check-button {
+  background: #075e54;
+  color: #ffffff;
+}
+
+.check-button:hover {
+  background: #064c44;
+}
