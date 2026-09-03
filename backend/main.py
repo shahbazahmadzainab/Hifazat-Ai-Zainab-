@@ -57,6 +57,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "https://hifazat-ai-zainab.vercel.app",
         "https://hifazat-ai-zainab-hqpyb6ic4-zainab-shahbaz-s-projects.vercel.app",
+        "https://hifazat-ai-zainab-i9al3zwvf-zainab-shahbaz-s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
