@@ -1002,3 +1002,30 @@ button:disabled {
 .check-button:hover {
   background: #064c44;
 }
+.upload-label {
+  display: block;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px dashed #b8c0cc;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #172033;
+  cursor: pointer;
+}
+
+.upload-label input {
+  margin-top: 8px;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #075e54;
+}
+
+.upload-warning {
+  font-size: 13px;
+  color: #8a5a00;
+  background: #fff8e6;
+  padding: 10px;
+  border-radius: 8px;
+}

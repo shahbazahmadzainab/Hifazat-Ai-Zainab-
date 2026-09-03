@@ -20,6 +20,7 @@ function App() {
     username: "",
     platform: "",
     details: "",
+    uploadedFileName: "",
   });
 
   // 🎤 Voice input
@@ -686,28 +687,84 @@ ${details}`
       )}
 
       {activeTool === "photo-leak" && (
-        <div className="popup-overlay">
-          <div className="popup">
-            <h2>🖼️ Photo Leak Safety</h2>
+  <div className="popup-overlay">
+    <div className="popup">
+      <h2>🖼️ Photo Leak Safety</h2>
 
-            <p>
-              Get safe steps if a private photo may have been shared without
-              permission. Do not forward or upload the private image here.
-            </p>
+      <p>
+        If you think your photo has been shared without permission, you can
+        provide the post/profile link and details below.
+      </p>
 
-            <div className="popup-buttons">
-              <button className="cancel-button" onClick={closeTool}>
-                Cancel
-              </button>
+      <input
+        type="url"
+        placeholder="Post or profile link (optional)"
+        value={formData.platform}
+        onChange={(e) => updateForm("platform", e.target.value)}
+      />
 
-              <button className="check-button" onClick={submitPhotoLeak}>
-                Get Safety Steps
-              </button>
-            </div>
-          </div>
-        </div>
+      <textarea
+        placeholder="Tell us what happened..."
+        value={formData.details}
+        onChange={(e) => updateForm("details", e.target.value)}
+      />
+
+      <label className="upload-label">
+        📷 Upload a non-sensitive image (optional)
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            if (file) {
+              setFormData((prev) => ({
+                ...prev,
+                uploadedFileName: file.name,
+              }));
+            }
+          }}
+        />
+      </label>
+
+      {formData.uploadedFileName && (
+        <p className="file-name">
+          Selected: {formData.uploadedFileName}
+        </p>
       )}
+
+      <p className="upload-warning">
+        ⚠️ Do not upload intimate, private, or sensitive images. You can
+        describe the situation instead.
+      </p>
+
+      <div className="popup-buttons">
+        <button className="cancel-button" onClick={closeTool}>
+          Cancel
+        </button>
+
+        <button
+          className="check-button"
+          onClick={async () => {
+            await useTool(
+              `I believe a photo may have been shared without permission.
+
+Post/profile link: ${formData.platform || "Not provided"}
+
+Details: ${formData.details || "Not provided"}
+
+Please give safe, age-appropriate steps for preserving evidence, reporting the content, blocking the account, securing accounts, and telling a trusted adult. Do not identify, track, expose, or provide private information about another person.`
+            );
+          }}
+        >
+          Get Safety Steps
+        </button>
+      </div>
     </div>
+  </div>
+)}
+
+</div>
   );
 }
 
